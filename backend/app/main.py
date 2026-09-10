@@ -1,12 +1,29 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.database import Base, engine
+from app.routers.auth import router as auth_router
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Bacbok API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://bacbok.vercel.app",
+        "https://bacbok.com",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth_router)
+
 
 @app.get("/")
-def home():
-    return {"message": "BacBok API is running"}
-  
-  
-if __name__ == "__main__":
-  import uvicorn
-  uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+def root():
+    return {"message": "Bacbok API is running"}

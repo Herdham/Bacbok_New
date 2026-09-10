@@ -1,18 +1,26 @@
 import { useState } from "react";
 import "./Auth.css"
 import { Link } from "react-router-dom";
+import { signup, login, forgotPassword } from "../api";
 
 function Forget({ onLogin }) {
+  
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log("Reset link requested for:", email);
-
-    // Later:
-    // fetch("http://127.0.0.1:8000/auth/forgot-password", ...)
-  };
+  try {
+    const data = await forgotPassword({
+      email: formData.email, // match whatever your state field is actually called
+    });
+    console.log(data.message); // "If that email is registered, a reset link has been sent."
+    alert(data.message); // show the same message to the user
+  } catch (err) {
+    alert(err.message);
+  }
+};
+  
 
   return (
     <div className="auth-page">

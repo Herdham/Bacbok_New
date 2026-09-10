@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { signup, login, forgotPassword } from "../api";
 import "./Auth.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onSignup,  onForgotPassword }) => {
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,23 +27,20 @@ const Login = ({ onSignup,  onForgotPassword }) => {
   };
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
-
-    console.log("Login data:", formData);
-
-    // Later:
-    //
-    // fetch("http://127.0.0.1:8000/auth/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-
-  };
+  try {
+    const data = await login({
+      identifier: formData.emailOrUsername,
+      password: formData.password,
+    });
+    console.log("Logged in:", data);
+    navigate("/home");
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
 
   return (

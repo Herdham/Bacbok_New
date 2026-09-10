@@ -1,8 +1,12 @@
 import { useState } from "react";
 import "./Auth.css";
 import { Link } from "react-router-dom";
+import { signup, login, forgotPassword } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const Signup = ({ onLogin }) => {
+  const navigate = useNavigate();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -24,31 +28,37 @@ const Signup = ({ onLogin }) => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.terms) {
-      alert("Please accept the Terms of Service and Privacy Policy.");
-      return;
-    }
+  if (!formData.terms) {
+    alert("Please accept the Terms of Service and Privacy Policy.");
+    return;
+  }
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
 
-    console.log("Signup data:", formData);
-
-    // Later:
-    // fetch("http://127.0.0.1:8000/auth/register", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-  };
+  try {
+    const data = await signup({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    });
+    console.log("Signed up:", data);
+    alert("Account created successfully! Please log in.");
+     navigate("/login");
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   return (
     <div className="auth-page">
