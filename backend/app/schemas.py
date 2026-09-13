@@ -39,12 +39,22 @@ class ResetPasswordRequest(BaseModel):
         return v
 
 
+class VerifyEmailRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class ResendCodeRequest(BaseModel):
+    email: EmailStr
+
+
 class UserResponse(BaseModel):
     id: int
     first_name: str
     last_name: str
     email: EmailStr
     username: str
+    is_verified: bool
 
     class Config:
         from_attributes = True

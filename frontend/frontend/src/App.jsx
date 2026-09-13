@@ -4,6 +4,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Forget from "./components/Forget";
+import VerifyEmail from "./components/VerifyEmail";
 
 function App() {
   return (
@@ -26,6 +27,11 @@ function App() {
         <Route
           path="*"
           element={<Navigate to="/login" replace />}
+        />
+        
+        <Route 
+          path="/verify-email" 
+          element={<VerifyEmail />} 
         />
 
       </Routes>

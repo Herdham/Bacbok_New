@@ -9,17 +9,14 @@ SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 
-def send_reset_email(to_email: str, token: str) -> None:
-    reset_link = f"{FRONTEND_RESET_URL}?token={token}"
-
+def _send(to_email: str, subject: str, body: str) -> None:
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
-        # No email service configured yet (no SMTP_* env vars set on Render).
-        # Prints the link so you can test the flow manually until email is wired up.
-        print(f"[DEV MODE] Password reset link for {to_email}: {reset_link}")
+        # No email service configured yet — print instead so you can test the flow.
+        print(f"[DEV MODE] Email to {to_email} — {subject}\n{body}")
         return
 
-    message = MIMEText(f"Click the link to reset your password: {reset_link}")
-    message["Subject"] = "Reset your Bacbok password"
+    message = MIMEText(body)
+    message["Subject"] = subject
     message["From"] = SMTP_USER
     message["To"] = to_email
 
@@ -27,3 +24,20 @@ def send_reset_email(to_email: str, token: str) -> None:
         server.starttls()
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.sendmail(SMTP_USER, to_email, message.as_string())
+
+
+def send_reset_email(to_email: str, token: str) -> None:
+    reset_link = f"{FRONTEND_RESET_URL}?token={token}"
+    _send(
+        to_email,
+        "Reset your Bacbok password",
+        f"Click the link to reset your password: {reset_link}",
+    )
+
+
+def send_verification_email(to_email: str, code: str) -> None:
+    _send(
+        to_email,
+        "Your Bacbok verification code",
+        f"Your verification code is: {code}\n\nThis code expires in 15 minutes.",
+    )

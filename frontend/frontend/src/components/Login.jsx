@@ -1,302 +1,127 @@
 import { useState } from "react";
-import { signup, login, forgotPassword } from "../api";
-import "./Auth.css";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api";
+import "./Auth.css";
 
-const Login = ({ onSignup,  onForgotPassword }) => {
+const Login = () => {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
-    remember: false,
   });
 
-
   const handleChange = (e) => {
-
-    const { name, value, type, checked } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
-  try {
-    const data = await login({
-      identifier: formData.emailOrUsername,
-      password: formData.password,
-    });
-    console.log("Logged in:", data);
-    navigate("/home");
-  } catch (err) {
-    alert(err.message);
-  }
-};
-
+    try {
+      await login({
+        identifier: formData.emailOrUsername,
+        password: formData.password,
+      });
+      navigate("/home");
+    } catch (err) {
+      if (err.message.toLowerCase().includes("verify")) {
+        const typedEmail = formData.emailOrUsername.includes("@")
+          ? formData.emailOrUsername
+          : "";
+        navigate("/verify-email", { state: typedEmail ? { email: typedEmail } : undefined });
+      } else {
+        alert(err.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-
-    <div className="auth-page">
-
-      {/* LOGIN PANEL */}
-
-      <div className="auth-form-panel login-panel">
-
-        <div className="login-container">
-
-          {/* LOGO */}
-
-          <div className="login-brand">
-
-            <div className="brand-icon small">
-              B
-            </div>
-
-            <h2>BacBok</h2>
-
-            <button className="theme-button">
-              ☾
-            </button>
-
-          </div>
-
-
-          {/* HEADING */}
-
-          <div className="login-heading">
-
-            <h2>
-              Welcome back <span>👋</span>
-            </h2>
-
-            <p>
-              Glad to see you again! <span>💜</span>
-            </p>
-
-          </div>
-
-
-          {/* BIG LOGO VISUAL */}
-
-          <div className="login-visual">
-
-            <div className="glow-circle"></div>
-
-            <div className="big-b-logo">
-              B
-            </div>
-
-            <div className="chat-bubble">
-              •••
-            </div>
-
-
-            <div className="avatar avatar-1">
-              👩
-            </div>
-
-            <div className="avatar avatar-2">
-              👨
-            </div>
-
-            <div className="avatar avatar-3">
-              👩
-            </div>
-
-            <div className="avatar avatar-4">
-              👨
-            </div>
-
-
-            <div className="reaction reaction-heart">
-              ♥
-            </div>
-
-            <div className="reaction reaction-like">
-              👍
-            </div>
-
-            <div className="reaction reaction-message">
-              💬
-            </div>
-
-          </div>
-
-
-          {/* FORM */}
-
-          <form onSubmit={handleSubmit}>
-
-
-            {/* EMAIL */}
-
-            <div className="input-group">
-
-              <div className="input-wrapper">
-
-                <span className="input-icon">
-                  ♙
-                </span>
-
-                <input
-                  type="text"
-                  name="emailOrUsername"
-                  placeholder="Email or username"
-                  value={formData.emailOrUsername}
-                  onChange={handleChange}
-                  required
-                />
-
-              </div>
-
-            </div>
-
-
-            {/* PASSWORD */}
-
-            <div className="input-group">
-
-              <div className="input-wrapper">
-
-                <span className="input-icon">
-                  🔒
-                </span>
-
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
-                >
-                  {showPassword ? "◉" : "◌"}
-                </button>
-
-              </div>
-
-            </div>
-
-
-            {/* REMEMBER + FORGOT */}
-
-            <div className="login-options">
-
-              <label className="remember">
-
-                <input
-                  type="checkbox"
-                  name="remember"
-                  checked={formData.remember}
-                  onChange={handleChange}
-                />
-
-                <span className="custom-checkbox"></span>
-
-                Remember me
-
-              </label>
-
-
-              <Link to="/forgot-password" className="forgot">
-                  Forgot password?
-              </Link>
-
-            </div>
-
-
-            {/* LOGIN BUTTON */}
-
-            <button
-              type="submit"
-              className="primary-button"
-            >
-
-              <span>Login</span>
-
-              <span className="button-arrow">
-                →
-              </span>
-
-            </button>
-
-          </form>
-
-
-          {/* DIVIDER */}
-
-          <div className="divider">
-
-            <span></span>
-
-            <p>or continue with</p>
-
-            <span></span>
-
-          </div>
-
-
-          {/* SOCIAL */}
-
-          <div className="social-buttons">
-
-            <button className="social-button">
-              <span className="google-icon">
-                G
-              </span>
-
-              Google
-            </button>
-
-
-            <button className="social-button">
-
-              <span className="apple-icon">
-                ●
-              </span>
-
-              Apple
-
-            </button>
-
-          </div>
-
-
-          {/* SIGNUP */}
-
-          <p className="switch-auth">
-
-            Don't have an account?{" "}
-
-            <Link to="/signup" style={{ textDecoration: "none" }}> Create an account</Link>
-
-          </p>
-
+    <div className="sc-page theme-login">
+      <div className="sc-card">
+        <div className="sc-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1.1-5.4A8.5 8.5 0 1121 11.5z"
+              stroke="white"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
 
+        <h1 className="sc-brand">Bacbok</h1>
+        <p className="sc-tagline">
+          Sign in to connect with your friends and family
+        </p>
+
+        <form onSubmit={handleSubmit} className="sc-form">
+          <div className="sc-field">
+            <label>Email address</label>
+            <div className="sc-input-wrap">
+              <span className="sc-icon">✉</span>
+              <input
+                type="text"
+                name="emailOrUsername"
+                placeholder="Enter your email"
+                value={formData.emailOrUsername}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="sc-field">
+            <label>Password</label>
+            <div className="sc-input-wrap">
+              <span className="sc-icon">🔒</span>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="sc-options-row">
+            <label className="sc-show-passwords">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              <span className="sc-checkbox" />
+              Show password
+            </label>
+
+            <Link to="/forgot-password" className="sc-forgot-link">
+              Forgot password?
+            </Link>
+          </div>
+
+          <button type="submit" className="sc-submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+            <span className="sc-arrow">→</span>
+          </button>
+        </form>
+
+        <p className="sc-switch">
+          Don't have an account? <Link to="/signup">Create Account</Link>
+        </p>
       </div>
-
     </div>
-
   );
-
 };
 
 export default Login;
