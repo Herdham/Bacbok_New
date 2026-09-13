@@ -1,29 +1,34 @@
 import os
-import smtplib
-from email.mime.text import MIMEText
+import requests
 
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "Bacbok <noreply@bacbok.com>")
 FRONTEND_RESET_URL = os.getenv("FRONTEND_RESET_URL", "https://bacbok.com/reset-password")
-SMTP_HOST = os.getenv("SMTP_HOST")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 
 def _send(to_email: str, subject: str, body: str) -> None:
-    if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
+    if not RESEND_API_KEY:
         # No email service configured yet — print instead so you can test the flow.
         print(f"[DEV MODE] Email to {to_email} — {subject}\n{body}")
         return
 
-    message = MIMEText(body)
-    message["Subject"] = subject
-    message["From"] = SMTP_USER
-    message["To"] = to_email
-
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.sendmail(SMTP_USER, to_email, message.as_string())
+    try:
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {RESEND_API_KEY}"},
+            json={
+                "from": FROM_EMAIL,
+                "to": [to_email],
+                "subject": subject,
+                "text": body,
+            },
+            timeout=10,
+        )
+        if response.status_code >= 400:
+            print(f"[EMAIL ERROR] Resend rejected the request ({response.status_code}): {response.text}")
+    except Exception as e:
+        # Never let a slow/broken email service block or crash the request that triggered it.
+        print(f"[EMAIL ERROR] Failed to send to {to_email}: {e}")
 
 
 def send_reset_email(to_email: str, token: str) -> None:
