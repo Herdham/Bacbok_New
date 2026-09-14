@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Bacbok",
+  "short_name": "Bacbok",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
