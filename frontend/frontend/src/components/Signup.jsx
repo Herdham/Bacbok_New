@@ -52,16 +52,8 @@ const Signup = () => {
   return (
     <div className="sc-page theme-login">
       <div className="sc-card">
-        <div className="sc-logo">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M9 11a4 4 0 100-8 4 4 0 000 8zM2 21c0-3.9 3.1-7 7-7 1.35 0 2.6.37 3.68 1.02M16 8h4M18 6v4"
-              stroke="white"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <div className="sc-logo sc-logo--image">
+          <img src="/images/bacbok-logo.png" alt="Bacbok" />
         </div>
 
         <h1 className="sc-brand">Bacbok</h1>

@@ -46,16 +46,8 @@ const Login = () => {
   return (
     <div className="sc-page theme-login">
       <div className="sc-card">
-        <div className="sc-logo">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1.1-5.4A8.5 8.5 0 1121 11.5z"
-              stroke="white"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <div className="sc-logo sc-logo--image">
+          <img src="/images/bacbok-logo.png" alt="Bacbok" />
         </div>
 
         <h1 className="sc-brand">Bacbok</h1>

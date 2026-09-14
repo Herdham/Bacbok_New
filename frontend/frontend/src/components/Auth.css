@@ -58,6 +58,20 @@
   height: 30px;
 }
 
+.sc-logo--image {
+  width: 84px;
+  height: 84px;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.sc-logo--image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .sc-brand {
   margin: 0 0 8px;
   font-size: 28px;
