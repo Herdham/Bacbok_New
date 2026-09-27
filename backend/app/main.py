@@ -5,8 +5,6 @@ from app.database import Base, engine
 from app.routers.auth import router as auth_router
 from app.routers.posts import router as posts_router
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Bacbok API")
 
 app.add_middleware(
