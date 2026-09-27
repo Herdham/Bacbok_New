@@ -86,3 +86,41 @@ export async function resendCode({ email }) {
   });
   return handleResponse(res);
 }
+
+export async function createPost({ text, imageUrls }) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ text, image_urls: imageUrls || [] }),
+  });
+  return handleResponse(res);
+}
+
+export async function getFeed({ skip = 0, limit = 20 } = {}) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/posts?skip=${skip}&limit=${limit}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse(res);
+}
+
+
+export async function reactToPost(postId, reactionType) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/posts/${postId}/react`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ reaction_type: reactionType }),
+  });
+  return handleResponse(res);
+}
+

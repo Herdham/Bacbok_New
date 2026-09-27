@@ -1,7 +1,10 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+load_dotenv()
 
 # On Render, DATABASE_URL will be set (Postgres). Locally, it won't be,
 # so we fall back to SQLite for easy local development.
@@ -11,7 +14,7 @@ if DATABASE_URL:
     # Render gives URLs starting with "postgres://", but SQLAlchemy needs "postgresql://"
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    engine = create_engine(DATABASE_URL)
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=280)
 else:
     DATABASE_URL = "sqlite:///./bacbok.db"
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})

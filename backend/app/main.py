@@ -3,8 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.routers.auth import router as auth_router
-
-Base.metadata.create_all(bind=engine)
+from app.routers.posts import router as posts_router
 
 app = FastAPI(title="Bacbok API")
 
@@ -22,6 +21,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(posts_router)
 
 
 @app.get("/")

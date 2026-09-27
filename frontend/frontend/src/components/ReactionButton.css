@@ -1,0 +1,52 @@
+.reaction-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.reaction-picker {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  gap: 2px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 6px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+}
+
+.reaction-picker-item {
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 50%;
+  transition: transform 0.12s ease;
+  cursor: pointer;
+}
+
+.reaction-picker-item:hover {
+  transform: scale(1.35) translateY(-4px);
+}
+
+.reaction-emoji {
+  font-size: 22px;
+  display: block;
+  line-height: 1;
+}
+
+.reaction-current-emoji {
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.stat-pill.is-reacted {
+  background: rgba(74, 140, 255, 0.12);
+}
+
+.reaction-count {
+  margin-left: 6px;
+  color: var(--text-low);
+  font-weight: 500;
+}
