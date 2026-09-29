@@ -37,6 +37,12 @@ html, body, #root {
   text-align: left;
   display: block;
   max-width: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html, body {
+  overflow-x: hidden;
 }
 
 * {
